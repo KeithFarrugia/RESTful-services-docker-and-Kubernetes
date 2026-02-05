@@ -17,7 +17,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Status code is 200\"] = responseCode.code === 201;",
 									"tests[\"Response should not be 'do some magic!'\"] = responseBody != \"do some magic!\";",
 									"// pm.globals.set(\"student_id\", responseBody);",
 									"var jsonData = JSON.parse(responseBody);",

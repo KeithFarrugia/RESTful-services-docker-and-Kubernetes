@@ -50,7 +50,7 @@ def delete_student(student_id):  # noqa: E501
         return {"message": result[0]}, result[1]
 
     # Success
-    return {"message": f"Student {student_id} deleted successfully"}, 200
+    return {"student_id": student_id}, 200
 
 
 def get_student_by_id(student_id):  # noqa: E501

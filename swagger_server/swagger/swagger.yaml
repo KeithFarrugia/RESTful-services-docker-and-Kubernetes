@@ -103,6 +103,7 @@ components:
         student_id:
           type: string
           format: uuid
+          readOnly: true
         first_name:
           type: string
         last_name:
@@ -112,7 +113,6 @@ components:
           items:
             $ref: "#/components/schemas/GradeRecord"
       example:
-        student_id: 550e8400-e29b-41d4-a716-446655440000
         first_name: Alice
         last_name: Smith
         grade_records:

@@ -59,6 +59,7 @@ docs/_build/
 
 # PyBuilder
 target/
-
+*\tmp\
 #Ipython Notebook
 .ipynb_checkpoints
+/swagger_server/service/tmp/

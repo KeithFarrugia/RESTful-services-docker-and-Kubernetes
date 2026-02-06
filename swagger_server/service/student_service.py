@@ -25,7 +25,6 @@ else:
 
 db = client[DB_NAME]
 students_col = db["students"]
-
 def add(student=None):
     if students_col.find_one({"first_name": student.first_name, "last_name": student.last_name}):
         return "already exists", 409
@@ -33,7 +32,13 @@ def add(student=None):
     student_id = str(uuid.uuid4())
     student.student_id = student_id
 
-    students_col.insert_one(student.to_dict())
+    # Make sure you store grades as a list of numbers
+    doc = student.to_dict()
+    if "grade_records" in doc:
+        doc["grades"] = [g["grade"] for g in doc["grade_records"]]
+        del doc["grade_records"]
+
+    students_col.insert_one(doc)
     return student_id, 200
 
 

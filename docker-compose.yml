@@ -1,7 +1,7 @@
 version: '3'
 services:
   student_service:
-    image: student_service:local
+    image: keithfarrugia/student_service:latest
     restart: unless-stopped
     depends_on:
       - mongo

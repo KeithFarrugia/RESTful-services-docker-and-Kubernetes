@@ -24,7 +24,7 @@ def add(student=None):
     student.student_id = str(uuid.uuid4())
 
     student_db.insert(student.to_dict())
-    return student.student_id
+    return {"student_id": student.student_id}, 200
 
 
 def get_by_id(student_id=None, subject=None):

@@ -25,6 +25,9 @@ else:
 
 db = client[DB_NAME]
 students_col = db["students"]
+
+
+
 def add(student=None):
     if students_col.find_one({"first_name": student.first_name, "last_name": student.last_name}):
         return "already exists", 409
@@ -32,12 +35,8 @@ def add(student=None):
     student_id = str(uuid.uuid4())
     student.student_id = student_id
 
-    # Make sure you store grades as a list of numbers
+    # Just store grade_records directly
     doc = student.to_dict()
-    if "grade_records" in doc:
-        doc["grades"] = [g["grade"] for g in doc["grade_records"]]
-        del doc["grade_records"]
-
     students_col.insert_one(doc)
     return student_id, 200
 
@@ -63,9 +62,14 @@ def average_grade(student_id=None):
     if not student:
         return "not found", 404
 
-    grades = student.get("grades", [])
+    # Extract grades from grade_records
+    grade_records = student.get("grade_records", [])
+    if not grade_records:
+        return "no grades", 404
+
+    grades = [record.get("grade", 0) for record in grade_records]
     if not grades:
         return "no grades", 404
 
     average = sum(grades) / len(grades)
-    return average, 200
+    return {"average_grade": average}, 200

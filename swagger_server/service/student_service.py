@@ -46,8 +46,11 @@ def get_by_id(student_id=None):
     student = students_col.find_one({"student_id": student_id})
     if not student:
         return "not found", 404
-    return student, 200
 
+    # remove MongoDB _id
+    student.pop("_id", None)
+    print("DEBUG: student object from MongoDB:", student)  # <- added print
+    return student, 200
 
 def delete(student_id=None):
     res = students_col.delete_one({"student_id": student_id})

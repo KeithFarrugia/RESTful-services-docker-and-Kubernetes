@@ -76,7 +76,7 @@ jobs:
     - name: Stop services
       if: always()  # runs even if previous steps fail
       run: |
-        docker-compose down
+        docker compose down
     
 
     # 7 Custom check for failed Newman run

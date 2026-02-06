@@ -95,6 +95,7 @@ paths:
   /student/{student_id}/average_grade:
     get:
       summary: Get average grade of a student
+      operationId: get_average_grade
       parameters:
         - in: path
           name: student_id
@@ -112,7 +113,8 @@ paths:
                   average_grade:
                     type: number
         '404':
-          description: Student not found or no grades
+          description: "Student not found or no grades"
+      x-openapi-router-controller: swagger_server.controllers.default_controller
 
 components:
   schemas:

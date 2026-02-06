@@ -56,7 +56,7 @@ def delete(student_id=None):
     return student_id, 200
 
 
-def get_average_grade(student_id=None):
+def average_grade(student_id=None):
     student = students_col.find_one({"student_id": student_id})
     if not student:
         return "not found", 404
@@ -66,4 +66,4 @@ def get_average_grade(student_id=None):
         return "no grades", 404
 
     average = sum(grades) / len(grades)
-    return {"average_grade": average}, 200
+    return average, 200

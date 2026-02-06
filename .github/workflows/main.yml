@@ -23,7 +23,7 @@ jobs:
     # 3 Start services with docker-compose (MongoDB + student service)
     - name: Start services
       run: |
-        docker-compose up -d
+        docker compose up -d
         docker ps
         sleep 10
 

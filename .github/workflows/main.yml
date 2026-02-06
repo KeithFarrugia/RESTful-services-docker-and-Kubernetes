@@ -27,6 +27,19 @@ jobs:
         docker ps
         sleep 10
 
+    - name: Wait for student_service to be ready
+      run: |
+        echo "Waiting for student_service on port 8080..."
+        for i in {1..20}; do
+          if nc -z localhost 8080; then
+            echo "student_service is up!"
+            break
+          fi
+          sleep 3
+        done
+    
+    
+
     # 4 Ensure Postman files exist
     - name: "Check files existence"
       uses: andstor/file-existence-action@v2

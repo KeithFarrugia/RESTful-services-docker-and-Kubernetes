@@ -49,7 +49,6 @@ def get_by_id(student_id=None):
 
     # remove MongoDB _id
     student.pop("_id", None)
-    print("DEBUG: student object from MongoDB:", student)  # <- added print
     return student, 200
 
 def delete(student_id=None):

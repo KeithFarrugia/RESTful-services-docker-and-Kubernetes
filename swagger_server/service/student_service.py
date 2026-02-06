@@ -27,13 +27,21 @@ def add(student=None):
     return {"student_id": student.student_id}, 200
 
 
-def get_by_id(student_id=None, subject=None):
+def get_by_id(student_id=None):
     student = student_db.get(Query().student_id == student_id)
     if not student:
         return 'not found', 404
-    student['student_id'] = student_id
-    print(student)
-    return student,200
+
+    # Ensure the JSON response matches the expected schema
+    student_response = {
+        "student_id": student["student_id"],
+        "first_name": student["first_name"],
+        "last_name": student["last_name"],
+        "grade_records": student.get("grade_records", [])  # empty list if none
+    }
+
+    print(student_response)
+    return student_response, 200
 
 
 def delete(student_id=None):

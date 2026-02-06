@@ -1,16 +1,29 @@
 import os
 import tempfile
+import time
 import uuid
-from pymongo import MongoClient
+from pymongo import MongoClient, errors
 from functools import reduce
 
-from tinydb import TinyDB, Query
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
-client = MongoClient(MONGO_URI)
+DB_NAME = os.getenv("DB_NAME", "student_db")
 
+# Retry loop to wait for MongoDB to be ready
+max_retries = 10
+for i in range(max_retries):
+    try:
+        client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=2000)
+        client.admin.command('ping')  # triggers exception if Mongo is not ready
+        print("Connected to MongoDB!")
+        break
+    except errors.ServerSelectionTimeoutError:
+        print(f"MongoDB not ready ({i+1}/{max_retries})... retrying in 2s")
+        time.sleep(2)
+else:
+    print("MongoDB connection failed after retries")
+    exit(1)
 
-db_name = os.getenv("DB_NAME", "student_db")
-db = client[db_name]
+db = client[DB_NAME]
 students_col = db["students"]
 
 def add(student=None):

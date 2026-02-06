@@ -1,6 +1,5 @@
 import connexion
 import six
-from flask import jsonify
 
 from swagger_server.models.student import Student  # noqa: E501
 from swagger_server import util
@@ -17,20 +16,11 @@ def add_student(body):  # noqa: E501
 
     :rtype: str
     """
-    if not connexion.request.is_json:
-        # If request is not JSON, return 400 Bad Request
-        return {"error": "Request body must be JSON"}, 400
+    if connexion.request.is_json:
+        body = Student.from_dict(connexion.request.get_json())  # noqa: E501
+        return student_service.add(body)
+    return 500,'error'
 
-    body = Student.from_dict(connexion.request.get_json())  # noqa: E501
-    result = student_service.add(body)
-
-    # student_service.add() could return a UUID string or a tuple like ('already exists', 409)
-    if isinstance(result, tuple):
-        message, status = result
-        return {"error": message}, status
-
-    # Successfully created
-    return {"student_id": result, "message": "Student added successfully"}, 201
 
 def delete_student(student_id):  # noqa: E501
     """Deletes a student
@@ -42,15 +32,8 @@ def delete_student(student_id):  # noqa: E501
 
     :rtype: object
     """
-    result = student_service.delete(student_id)
 
-    # Handle service response for errors
-    if isinstance(result, tuple):
-        # Already in form (message, status_code)
-        return {"message": result[0]}, result[1]
-
-    # Success
-    return {"student_id": student_id}, 200
+    return student_service.delete(student_id)
 
 
 def get_student_by_id(student_id):  # noqa: E501
@@ -63,12 +46,4 @@ def get_student_by_id(student_id):  # noqa: E501
 
     :rtype: Student
     """
-    result = student_service.get_by_id(student_id)
-
-    # Handle service response for errors
-    if isinstance(result, tuple):
-        # Already in form (message, status_code)
-        return {"message": result[0]}, result[1]
-
-    # Success, return student as JSON
-    return result, 200
+    return student_service.get_by_id(student_id)

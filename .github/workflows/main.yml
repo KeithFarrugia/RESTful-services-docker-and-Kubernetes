@@ -9,21 +9,32 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+
+    # 1 Checkout the repo
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    # 2 Build the Docker image
     - name: Build docker
       run: |
         docker build . -t keithfarrugia/student_service
-    - name: run docker
-      run: |
-        docker run -d -p 8080:8080 keithfarrugia/student_service:latest && \
-          docker ps && sleep 5
+        
 
+    # 3 Start services with docker-compose (MongoDB + student service)
+    - name: Start services
+      run: |
+        docker-compose up -d
+        docker ps
+        sleep 10
+
+    # 4 Ensure Postman files exist
     - name: "Check files existence"
       uses: andstor/file-existence-action@v2
       with:
         files: "postman/collection.json,postman/environment.json"
         fail: true
 
+    # 5 Run Newman API tests
     - name: Run API Tests
       id: run-newman
       uses: anthonyvscode/newman-action@master
@@ -33,6 +44,7 @@ jobs:
         reporters: cli
         bail: true
 
+    # 6 Custom check for failed Newman run
     - name: Check if we failed
       id: fail-check
       shell: bash
@@ -47,6 +59,14 @@ jobs:
           echo "failed=true" >> $GITHUB_OUTPUT;
         fi
 
+    # 9 Stop and remove all containers
+    - name: Stop services
+      if: always()  # runs even if previous steps fail
+      run: |
+        docker-compose down
+    
+
+    # 7 Custom check for failed Newman run
     - name: fail if empty
       if: ${{ steps.fail-check.outputs.failed == 'true' }}
       run: exit 1

@@ -1,5 +1,5 @@
 import os
-import tempfile
+
 import time
 import uuid
 from pymongo import MongoClient, errors
@@ -34,7 +34,6 @@ def add(student=None):
     student_id = str(uuid.uuid4())
     student.student_id = student_id
 
-    # Just store grade_records directly
     doc = student.to_dict()
     students_col.insert_one(doc)
     return student_id, 200

@@ -3,7 +3,6 @@ import tempfile
 import time
 import uuid
 from pymongo import MongoClient, errors
-from functools import reduce
 
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 DB_NAME = os.getenv("DB_NAME", "student_db")
